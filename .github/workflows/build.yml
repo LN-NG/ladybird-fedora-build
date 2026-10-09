@@ -22,7 +22,7 @@ jobs:
           persist-credentials: false
       - name: Build in Fedora 44
         run: |
-          docker run --rm --volume "$PWD:/work" --workdir /work fedora:44 bash scripts/container.sh
+          docker run --rm --volume "$PWD:/work" --workdir /work quay.io/fedora/fedora:44 bash scripts/container.sh
       - name: Upload browser package
         uses: actions/upload-artifact@v7
         with:
