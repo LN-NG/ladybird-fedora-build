@@ -54,6 +54,15 @@ result = Path('../output/empty-display.log').read_text()
 assert 'FAIL:' not in result, result
 assert result.count('PASS:') == 10, result
 PY
+QT_QPA_PLATFORM=offscreen timeout 60 ../package/bin/Ladybird \
+    --headless=text --temporary-profile --force-cpu-painting \
+    "file://$PWD/../regression/default-chinese.html" > ../output/default-chinese.log 2>&1
+cat ../output/default-chinese.log
+python3 - <<'PYLANG'
+from pathlib import Path
+result = Path('../output/default-chinese.log').read_text()
+assert 'FAIL:' not in result and 'PASS: default language is zh-CN' in result, result
+PYLANG
 printf '%s\n' "$revision" > ../package/SOURCE-REVISION
 cp ../PACKAGE-README.txt ../package/README.txt
 cd ..

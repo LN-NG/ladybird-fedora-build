@@ -28,3 +28,7 @@ The workflow does not receive account credentials or repository secrets.
 The repository owner, workflow activity and cloud build logs are public.
 
 Upstream: https://github.com/LadybirdBrowser/ladybird
+
+`patches/default-chinese.patch` sets the default web language to Simplified Chinese
+(`zh-CN`) for browser settings and request-loader fallbacks. Existing language
+preferences still take precedence. Qt interface translations are not included.

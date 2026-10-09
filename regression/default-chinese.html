@@ -1,0 +1,8 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Default web language regression</title>
+<pre id="results"></pre>
+<script>
+document.getElementById('results').textContent = navigator.language === 'zh-CN' && navigator.languages[0] === 'zh-CN'
+    ? 'PASS: default language is zh-CN' : `FAIL: default language is ${navigator.language}`;
+</script>

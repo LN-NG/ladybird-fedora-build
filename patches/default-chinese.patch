@@ -1,0 +1,48 @@
+diff --git a/Libraries/LibWebView/Settings.cpp b/Libraries/LibWebView/Settings.cpp
+--- a/Libraries/LibWebView/Settings.cpp
++++ b/Libraries/LibWebView/Settings.cpp
+@@ -27,7 +27,7 @@
+ static constexpr auto NEW_TAB_PAGE_URL_KEY = "newTabPageURL"sv;
+ 
+ static constexpr auto LANGUAGES_KEY = "languages"sv;
+-static auto DEFAULT_LANGUAGE = "en"_string;
++static auto DEFAULT_LANGUAGE = "zh-CN"_string;
+ 
+ static constexpr auto APPEARANCE_KEY = "appearance"sv;
+ static constexpr auto SHOW_MENU_BAR_KEY = "showMenuBar"sv;
+diff --git a/Libraries/LibWeb/Loader/ResourceLoader.cpp b/Libraries/LibWeb/Loader/ResourceLoader.cpp
+--- a/Libraries/LibWeb/Loader/ResourceLoader.cpp
++++ b/Libraries/LibWeb/Loader/ResourceLoader.cpp
+@@ -58,7 +58,7 @@
+     : m_heap(heap)
+     , m_user_agent(MUST(String::from_utf8(default_user_agent)))
+     , m_platform(MUST(String::from_utf8(default_platform)))
+-    , m_preferred_languages({ "en-US"_string })
++    , m_preferred_languages({ "zh-CN"_string })
+     , m_navigator_compatibility_mode(default_navigator_compatibility_mode)
+ {
+     set_client(move(request_client));
+diff --git a/Libraries/LibWeb/Loader/ResourceLoader.h b/Libraries/LibWeb/Loader/ResourceLoader.h
+--- a/Libraries/LibWeb/Loader/ResourceLoader.h
++++ b/Libraries/LibWeb/Loader/ResourceLoader.h
+@@ -97,7 +97,7 @@
+     String m_user_agent;
+     SiteCompatibilityData m_site_compatibility_data;
+     String m_platform;
+-    Vector<String> m_preferred_languages = { "en"_string };
++    Vector<String> m_preferred_languages = { "zh-CN"_string };
+     NavigatorCompatibilityMode m_navigator_compatibility_mode;
+     bool m_enable_global_privacy_control { false };
+ };
+diff --git a/Libraries/LibWeb/Fetch/Fetching/Fetching.cpp b/Libraries/LibWeb/Fetch/Fetching/Fetching.cpp
+--- a/Libraries/LibWeb/Fetch/Fetching/Fetching.cpp
++++ b/Libraries/LibWeb/Fetch/Fetching/Fetching.cpp
+@@ -345,7 +345,7 @@
+         if (ResourceLoader::is_initialized())
+             accept_language.join(","sv, ResourceLoader::the().preferred_languages());
+         else
+-            accept_language.append("en-US"sv);
++            accept_language.append("zh-CN"sv);
+ 
+         auto header = HTTP::Header::isomorphic_encode("Accept-Language"sv, accept_language.string_view());
+         request.header_list()->append(move(header));
