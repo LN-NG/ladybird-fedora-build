@@ -10,7 +10,7 @@ git init source
 git -C source remote add origin https://github.com/LadybirdBrowser/ladybird.git
 git -C source fetch --depth 1 origin "$revision"
 git -C source checkout --detach FETCH_HEAD
-git -C source apply ../patches/rust-job-pools.patch
+git -C source apply ../patches/*.patch
 cd source
 python3 Meta/ladybird.py vcpkg --preset Release --jobs 3
 cmake --preset Release \
@@ -44,6 +44,16 @@ while IFS= read -r -d '' binary; do
     fi
 done < <(find ../package/bin ../package/libexec ../package/lib -type f -print0)
 QT_QPA_PLATFORM=offscreen ../package/bin/Ladybird --help > ../output/smoke.log 2>&1
+QT_QPA_PLATFORM=offscreen timeout 60 ../package/bin/Ladybird \
+    --headless=text --temporary-profile --force-cpu-painting \
+    "file://$PWD/../regression/empty-display.html" > ../output/empty-display.log 2>&1
+cat ../output/empty-display.log
+python3 - <<'PY'
+from pathlib import Path
+result = Path('../output/empty-display.log').read_text()
+assert 'FAIL:' not in result, result
+assert result.count('PASS:') == 10, result
+PY
 printf '%s\n' "$revision" > ../package/SOURCE-REVISION
 cp ../PACKAGE-README.txt ../package/README.txt
 cd ..

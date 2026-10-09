@@ -1,0 +1,30 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Empty display declaration regression</title>
+<style>
+.number { display: inline-block; width: 22px; font: 18px/18px sans-serif; }
+.from-sheet { display: inline-block; display: ; }
+.row { width: 400px; height: 36px; line-height: 36px; overflow: hidden; white-space: nowrap; }
+.title { font-size: 16px; }
+</style>
+<div class="row"><span id="empty" class="number" style="display: ;">1</span><span id="title" class="title">Sample title</span></div>
+<span id="whitespace" class="number" style="display: &#9; &#10; ;">2</span>
+<span id="comment" class="number" style="display: /* comment */;">3</span>
+<span id="sheet" class="from-sheet">4</span>
+<pre id="results"></pre>
+<script>
+const results = [];
+function check(label, condition) { results.push(`${condition ? 'PASS' : 'FAIL'}: ${label}`); }
+for (const value of ['', ' ', '\t\n', '/* comment */']) {
+    check(`CSS.supports rejects ${JSON.stringify(value)}`, !CSS.supports('display', value));
+}
+check('valid multi-keyword display still accepted', CSS.supports('display', 'inline flow-root'));
+for (const id of ['empty', 'whitespace', 'comment', 'sheet']) {
+    check(`${id} preserves inline-block`, getComputedStyle(document.getElementById(id)).display === 'inline-block');
+}
+const number = document.getElementById('empty').getBoundingClientRect();
+const title = document.getElementById('title').getBoundingClientRect();
+const row = document.querySelector('.row').getBoundingClientRect();
+check('title stays after the number on the same line', title.left >= number.right && title.bottom <= row.bottom);
+document.getElementById('results').textContent = results.join('\n');
+</script>

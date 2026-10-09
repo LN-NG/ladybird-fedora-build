@@ -8,6 +8,9 @@ It builds with Clang and mold, three parallel compile jobs, one link job and no 
 The CPU target is x86-64-v3, avoiding reliance on the cloud runner's native CPU.
 The selected upstream revision is pinned in `scripts/build.sh`.
 `patches/rust-job-pools.patch` preserves the link pool when adding the Rust job pool.
+`patches/empty-display.patch` rejects empty CSS display declarations instead of
+turning them into block boxes. The packaged browser runs a regression check for
+empty/whitespace/comment-only values, valid display keywords and inline layout.
 
 Actions restores and saves vcpkg dependency binaries, ccache compilation results
 and Cargo registry/git downloads. Cache saving also runs after build failure.

@@ -1,0 +1,30 @@
+diff --git a/Libraries/LibWeb/Rust/src/css/parser/value_parser.rs b/Libraries/LibWeb/Rust/src/css/parser/value_parser.rs
+--- a/Libraries/LibWeb/Rust/src/css/parser/value_parser.rs
++++ b/Libraries/LibWeb/Rust/src/css/parser/value_parser.rs
+@@ -3553,6 +3553,9 @@
+     let Some(keywords) = keyword_sequence(values) else {
+         return ParseOutcome::Invalid;
+     };
++    if keywords.is_empty() {
++        return ParseOutcome::Invalid;
++    }
+     let display = if let [keyword] = keywords.as_slice() {
+         let Some(display) = FfiDisplay::from_single_keyword(*keyword) else {
+             return ParseOutcome::Invalid;
+@@ -6568,6 +6571,16 @@
+     }
+ 
+     #[test]
++    fn rejects_empty_display_values() {
++        for source in ["", " ", "\t\n", "/* comment */"] {
++            assert!(matches!(parse(property_id::DISPLAY, source), ParseOutcome::Invalid), "{source:?}");
++        }
++        for source in ["inline-block", "inline flow-root", "block", "list-item"] {
++            assert!(matches!(parse(property_id::DISPLAY, source), ParseOutcome::Parsed(_)), "{source}");
++        }
++    }
++
++    #[test]
+     fn parses_mixed_and_special_grammars() {
+         assert!(matches!(
+             parse(property_id::ALIGN_ITEMS, "normal"),
