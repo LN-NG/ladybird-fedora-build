@@ -1,0 +1,41 @@
+name: Fedora 44 x86_64
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fedora-44-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Build in Fedora 44
+        run: |
+          docker run --rm --volume "$PWD:/work" --workdir /work fedora:44 bash scripts/container.sh
+      - name: Upload browser package
+        uses: actions/upload-artifact@v7
+        with:
+          name: ladybird-fedora44-x86_64
+          path: output/ladybird-fedora44-x86_64.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 3
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-logs
+          path: output/*.log
+          if-no-files-found: ignore
+          retention-days: 3
