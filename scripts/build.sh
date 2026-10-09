@@ -10,7 +10,9 @@ git init source
 git -C source remote add origin https://github.com/LadybirdBrowser/ladybird.git
 git -C source fetch --depth 1 origin "$revision"
 git -C source checkout --detach FETCH_HEAD
-git -C source apply ../patches/*.patch
+for patch in patches/*.patch; do
+    git -C source apply "../$patch"
+done
 cd source
 python3 Meta/ladybird.py vcpkg --preset Release --jobs 3
 cmake --preset Release \
