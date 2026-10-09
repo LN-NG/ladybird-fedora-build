@@ -5,6 +5,7 @@ No local machine files or personal configuration are part of this repository.
 
 The workflow uses a standard GitHub-hosted Linux runner and a Fedora 44 container.
 It builds with Clang and mold, three parallel compile jobs, one link job and no LTO.
+The CPU target is x86-64-v3, avoiding reliance on the cloud runner's native CPU.
 The selected upstream revision is pinned in `scripts/build.sh`.
 
 Download the `ladybird-fedora44-x86_64` artifact from a successful Actions run,

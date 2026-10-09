@@ -14,6 +14,7 @@ python3 Meta/ladybird.py vcpkg --preset Release --jobs 3
 cmake --preset Release \
     -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
     -DLAGOM_USE_LINKER=mold -DLAGOM_LINK_POOL_SIZE=1 \
+    -DENABLE_CI_BASELINE_CPU=ON \
     -DENABLE_LTO_FOR_RELEASE=OFF -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX=/opt/ladybird \
     -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF \
