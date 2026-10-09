@@ -45,6 +45,14 @@ while IFS= read -r -d '' binary; do
         patchelf --set-rpath '$ORIGIN:$ORIGIN/../lib' "$binary"
     fi
 done < <(find ../package/bin ../package/libexec ../package/lib -type f -print0)
+# The container has no desktop login session or /run/user directory.
+mkdir -p ../.runtime-check/{config,cache,data,state,runtime}
+chmod 700 ../.runtime-check/runtime
+export XDG_CONFIG_HOME="$PWD/../.runtime-check/config"
+export XDG_CACHE_HOME="$PWD/../.runtime-check/cache"
+export XDG_DATA_HOME="$PWD/../.runtime-check/data"
+export XDG_STATE_HOME="$PWD/../.runtime-check/state"
+export XDG_RUNTIME_DIR="$PWD/../.runtime-check/runtime"
 QT_QPA_PLATFORM=offscreen ../package/bin/Ladybird --help > ../output/smoke.log 2>&1
 QT_QPA_PLATFORM=offscreen timeout 60 ../package/bin/Ladybird \
     --headless=text --temporary-profile --force-cpu-painting \
