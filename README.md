@@ -7,6 +7,13 @@ The workflow uses a standard GitHub-hosted Linux runner and a Fedora 44 containe
 It builds with Clang and mold, three parallel compile jobs, one link job and no LTO.
 The CPU target is x86-64-v3, avoiding reliance on the cloud runner's native CPU.
 The selected upstream revision is pinned in `scripts/build.sh`.
+`patches/rust-job-pools.patch` preserves the link pool when adding the Rust job pool.
+
+Actions restores and saves vcpkg dependency binaries, ccache compilation results
+and Cargo registry/git downloads. Cache saving also runs after build failure.
+ccache is limited to 2 GB. Each run writes a new cache key and restores the most
+recent compatible prefix; vcpkg and ccache perform their own input validation.
+The complete build tree and installed package are not cached.
 
 Download the `ladybird-fedora44-x86_64` artifact from a successful Actions run,
 extract its tar.gz file and run `./bin/Ladybird` in the extracted directory.

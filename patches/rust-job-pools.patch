@@ -1,0 +1,9 @@
+diff --git a/Meta/CMake/rust_crate.cmake b/Meta/CMake/rust_crate.cmake
+--- a/Meta/CMake/rust_crate.cmake
++++ b/Meta/CMake/rust_crate.cmake
+@@ -1,4 +1,4 @@
+-set_property(GLOBAL PROPERTY JOB_POOLS "${JOB_POOLS};cargo=1")
++set_property(GLOBAL APPEND PROPERTY JOB_POOLS cargo=1)
+ 
+ # Compiler flags shared by Rust libraries, binaries, and tests.
+ set(RUSTC_TARGET_FLAGS -Dwarnings ${RUSTC_TARGET_CPU_FLAGS})

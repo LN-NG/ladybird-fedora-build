@@ -4,11 +4,13 @@ revision=d3b18f7f7a8866aad231555bdedf056b4780f564
 mkdir -p output .cache/cargo .cache/ccache
 export CARGO_HOME="$PWD/.cache/cargo"
 export CCACHE_DIR="$PWD/.cache/ccache"
+export CCACHE_BASEDIR="$PWD" CCACHE_MAXSIZE=2G
 export VCPKG_MAX_CONCURRENCY=3 CARGO_BUILD_JOBS=3
 git init source
 git -C source remote add origin https://github.com/LadybirdBrowser/ladybird.git
 git -C source fetch --depth 1 origin "$revision"
 git -C source checkout --detach FETCH_HEAD
+git -C source apply ../patches/rust-job-pools.patch
 cd source
 python3 Meta/ladybird.py vcpkg --preset Release --jobs 3
 cmake --preset Release \
@@ -21,6 +23,7 @@ cmake --preset Release \
     2>&1 | tee ../output/configure.log
 /usr/bin/time -v cmake --build Build/release --target ladybird --parallel 3 \
     2>&1 | tee ../output/build.log
+ccache --show-stats
 cmake --install Build/release --strip --component ladybird_Runtime --prefix ../package
 
 # Bundle only the third-party libraries built by vcpkg; use Fedora's system Qt.

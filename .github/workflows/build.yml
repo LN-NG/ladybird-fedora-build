@@ -20,9 +20,39 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Restore vcpkg dependency cache
+        uses: actions/cache/restore@v5
+        with:
+          path: source/Build/caches/vcpkg-binary-cache
+          key: vcpkg-fedora44-clang-v1-${{ github.run_id }}
+          restore-keys: vcpkg-fedora44-clang-v1-
+      - name: Restore compiler and Rust download caches
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            .cache/ccache
+            .cache/cargo/registry
+            .cache/cargo/git
+          key: compiler-fedora44-clang-v1-${{ github.run_id }}
+          restore-keys: compiler-fedora44-clang-v1-
       - name: Build in Fedora 44
         run: |
           docker run --rm --volume "$PWD:/work" --workdir /work quay.io/fedora/fedora:44 bash scripts/container.sh
+      - name: Save vcpkg dependency cache even after build failure
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: source/Build/caches/vcpkg-binary-cache
+          key: vcpkg-fedora44-clang-v1-${{ github.run_id }}
+      - name: Save compiler and Rust download caches even after build failure
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            .cache/ccache
+            .cache/cargo/registry
+            .cache/cargo/git
+          key: compiler-fedora44-clang-v1-${{ github.run_id }}
       - name: Upload browser package
         uses: actions/upload-artifact@v7
         with:
